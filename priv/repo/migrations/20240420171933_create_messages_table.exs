@@ -6,7 +6,7 @@ defmodule HakatonBackend.Repo.Migrations.CreateMessagesTable do
       add :sender_id, references(:users, null: false)
       add :conversation_id, references(:conversations, null: false)
       add :content, :string
-      add :date, :naive_datetime
+      add :date, :utc_datetime
 
       timestamps()
     end

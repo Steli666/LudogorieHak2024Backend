@@ -1,13 +1,16 @@
 defmodule HakatonBackendWeb.UserControllerTest do
+  use HakatonBackendWeb.ConnCase, async: true
+
+  alias HakatonBackend.DB.Models.User
+  alias HakatonBackend.DB.Models.Conversation
   alias HakatonBackend.DB.Models.UserFriends
   alias HakatonBackend.Constants.FriendRequestStatus
   alias HakatonBackend.DB.Models.FriendRequest
-  use HakatonBackendWeb.ConnCase, async: true
 
   describe "send_friend_request/2" do
     setup do
       {:ok, user} =
-        HakatonBackend.DB.Models.User.create(%{
+        User.create(%{
           first_name: "Mark",
           last_name: "Brie",
           email: "markbrie@gmail.com",
@@ -30,7 +33,7 @@ defmodule HakatonBackendWeb.UserControllerTest do
   describe "accept_friend_request/2" do
     setup %{user: user} do
       {:ok, another_user} =
-        HakatonBackend.DB.Models.User.create(%{
+        User.create(%{
           first_name: "Mark",
           last_name: "Brie",
           email: "markbrie@gmail.com",
@@ -63,13 +66,15 @@ defmodule HakatonBackendWeb.UserControllerTest do
                  friend_id: another_user.id,
                  user_id: user.id
                })
+
+      assert {:ok, %Conversation{}} = Conversation.get_by(%{sender_id: user.id})
     end
   end
 
   describe "refuse_friend_request/2" do
     setup %{user: user} do
       {:ok, another_user} =
-        HakatonBackend.DB.Models.User.create(%{
+        User.create(%{
           first_name: "Mark",
           last_name: "Brie",
           email: "markbrie@gmail.com",

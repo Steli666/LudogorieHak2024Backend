@@ -45,6 +45,21 @@ defmodule HakatonBackend.DB.Model do
         end
       end
 
+      def get_all_by(fields, preloads \\ unquote(default_preloads)) do
+        where_clause = where_clause(fields)
+
+        query =
+          from(u in __MODULE__,
+            where: ^where_clause,
+            select: u
+          )
+
+        case Repo.all(query) |> Repo.preload(preloads) do
+          entry when not is_nil(entry) -> {:ok, entry}
+          _ -> {:error, :not_found, __MODULE__}
+        end
+      end
+
       def where_clause(search_terms) do
         where_match_clause = fn {k, v}, conditions ->
           dynamic([q], field(q, ^k) == ^v and ^conditions)

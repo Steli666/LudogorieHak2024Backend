@@ -5,6 +5,7 @@ defmodule HakatonBackend.Repo.Migrations.CreateConversationsTable do
     create table("conversations") do
       add :sender_id, references(:users, null: false)
       add :recipient_id, references(:users, null: false)
+      add :last_message_id, :id
 
       timestamps()
     end

@@ -23,6 +23,13 @@ defmodule HakatonBackendWeb.Router do
     put("/accept-friend-request/:sender_id", UserController, :accept_friend_request)
     put("/refuse-friend-request/:sender_id", UserController, :refuse_friend_request)
     post("/refresh", SessionController, :refresh_token)
+
+    scope "/conversation" do
+      get("/", ChatController, :index)
+      get("/:conversation_id", ChatController, :show)
+
+      post("/:conversation_id/:friend_id", ChatController, :send_message)
+    end
   end
 
   # Enable LiveDashboard and Swoosh mailbox preview in development
