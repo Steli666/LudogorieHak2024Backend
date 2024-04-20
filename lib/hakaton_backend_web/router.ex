@@ -14,11 +14,15 @@ defmodule HakatonBackendWeb.Router do
 
     post("/login", SessionController, :login)
     post("/register", SessionController, :register)
+  end
 
-    scope "/" do
-      pipe_through :authenticated
-      post("/refresh", SessionController, :refresh_token)
-    end
+  scope "/api", HakatonBackendWeb do
+    pipe_through [:api, :authenticated]
+
+    put("/send-friend-request/:recipient_id", UserController, :send_friend_request)
+    put("/accept-friend-request/:sender_id", UserController, :accept_friend_request)
+    put("/refuse-friend-request/:sender_id", UserController, :refuse_friend_request)
+    post("/refresh", SessionController, :refresh_token)
   end
 
   # Enable LiveDashboard and Swoosh mailbox preview in development

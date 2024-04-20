@@ -13,9 +13,10 @@ defmodule HakatonBackendWeb.SessionControllerTest do
         username: "Dobby"
       }
 
-      assert %{"token" => _} = conn
-             |> post("/api/register", params)
-             |> json_response(200)
+      assert %{"token" => _} =
+               conn
+               |> post("/api/register", params)
+               |> json_response(200)
     end
 
     test "fail to create a user due to invalid params", %{conn: conn} do
@@ -99,9 +100,9 @@ defmodule HakatonBackendWeb.SessionControllerTest do
   describe "refresh_token/2" do
     test "successfully refresh", %{conn_user: conn} do
       assert %{"token" => _token} =
-        conn
-        |> post("/api/refresh")
-        |> json_response(200)
+               conn
+               |> post("/api/refresh")
+               |> json_response(200)
     end
   end
 end

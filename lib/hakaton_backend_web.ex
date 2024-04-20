@@ -43,6 +43,9 @@ defmodule HakatonBackendWeb do
 
       import Plug.Conn
       import HakatonBackendWeb.Gettext
+      import HakatonBackendWeb.Responses
+
+      alias HakatonBackendWeb.Utils.Validation
 
       @bad_request {:error, :bad_request}
 

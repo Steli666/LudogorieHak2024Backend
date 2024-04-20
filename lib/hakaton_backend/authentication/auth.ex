@@ -5,7 +5,7 @@ defmodule HakatonBackend.Authentication.Auth do
   alias HakatonBackend.DB.Models.User
 
   def authenticate(%{password: password, email: email}) do
-    with {:ok, %User{} = user} <- User.get_by(:email, email),
+    with {:ok, %User{} = user} <- User.get_by(%{email: email}),
          {:ok, :valid_credentials} <- validate_password(user, password),
          {:ok, token, _claims} <- Tokenizer.encode_and_sign(user, %{id: user.id}) do
       {:ok, %{user: user, token: token}}

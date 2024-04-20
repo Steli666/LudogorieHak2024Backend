@@ -14,7 +14,7 @@ defmodule HakatonBackend.Authentication.Tokenizer do
   def subject_for_token(_, _), do: {:error, :resource_not_supported}
 
   def resource_from_claims(%{"sub" => email}) do
-    with {:ok, user} <- User.get_by(:email, email) do
+    with {:ok, user} <- User.get_by(%{email: email}) do
       {:ok, user}
     end
   end

@@ -2,7 +2,10 @@ defmodule HakatonBackend.DB.Models.User do
   use HakatonBackend.DB.Model
 
   alias HakatonBackend.DB.Models.Event
+  alias HakatonBackend.DB.Models.User
   alias HakatonBackend.DB.Models.UsersEvents
+  alias HakatonBackend.DB.Models.UserFriends
+  alias HakatonBackend.DB.Models.FriendRequest
 
   @required_attrs [:first_name, :last_name, :email, :password, :username]
   @allowed_attrs [:profile_description | @required_attrs]
@@ -16,7 +19,11 @@ defmodule HakatonBackend.DB.Models.User do
     field(:profile_description, :string)
 
     has_many(:organized_events, Event, foreign_key: :organizer_id)
+    has_many(:sent_friend_requests, FriendRequest, foreign_key: :sender_id)
+    has_many(:received_friend_requests, FriendRequest, foreign_key: :recipient_id)
+
     many_to_many(:events, Event, join_through: UsersEvents)
+    many_to_many(:friends, User, join_through: UserFriends)
 
     timestamps()
   end

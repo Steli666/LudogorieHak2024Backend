@@ -30,10 +30,12 @@ defmodule HakatonBackend.DB.Model do
         end
       end
 
-      def get_by(field, value, preloads \\ unquote(default_preloads)) do
+      def get_by(fields, preloads \\ unquote(default_preloads)) do
+        where_clause = where_clause(fields)
+
         query =
           from(u in __MODULE__,
-            where: fragment("? = ?", field(u, ^field), ^value),
+            where: ^where_clause,
             select: u
           )
 
@@ -43,13 +45,21 @@ defmodule HakatonBackend.DB.Model do
         end
       end
 
+      def where_clause(search_terms) do
+        where_match_clause = fn {k, v}, conditions ->
+          dynamic([q], field(q, ^k) == ^v and ^conditions)
+        end
+
+        Enum.reduce(search_terms, true, &where_match_clause.(&1, &2))
+      end
+
       def all(preloads \\ unquote(default_preloads)) do
         {:ok,
          Repo.all(__MODULE__)
          |> Repo.preload(preloads)}
       end
 
-      def update(id, attrs, preloads) do
+      def update(id, attrs, preloads \\ unquote(default_preloads)) do
         case Repo.get(__MODULE__, id) do
           nil ->
             {:error, :not_found, __MODULE__}
