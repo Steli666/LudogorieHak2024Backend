@@ -33,6 +33,20 @@ defmodule HakatonBackendWeb.ConnCase do
 
   setup tags do
     HakatonBackend.DataCase.setup_sandbox(tags)
-    {:ok, conn: Phoenix.ConnTest.build_conn()}
+    conn = Phoenix.ConnTest.build_conn()
+
+    {:ok, user} =
+      HakatonBackend.DB.Models.User.create(%{
+        first_name: "Jon",
+        last_name: "Doe",
+        email: "example@gmail.com",
+        password: "123456",
+        username: "danny2"
+      })
+
+    {:ok, token, _} = HakatonBackend.Authentication.Tokenizer.encode_and_sign(user, %{id: user.id})
+    conn_user = Plug.Conn.put_req_header(conn, "authorization", "bearer: " <> token)
+
+    {:ok, conn: Phoenix.ConnTest.build_conn(), conn_user: conn_user, user: user}
   end
 end

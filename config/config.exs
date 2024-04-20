@@ -30,8 +30,8 @@ config :hakaton_backend, HakatonBackendWeb.Endpoint,
 # For production it's recommended to configure a different adapter
 # at the `config/runtime.exs`.
 
-config :hakaton, HakatonBackend.Authentication.Tokenizer,
-  issuer: "hakaton",
+config :hakaton_backend, HakatonBackend.Authentication.Tokenizer,
+  issuer: "hakaton_backend",
   secret_key: "OH+s9QEzQ4V5lJk7t1XHbfwxqg41oKCV/nAREVpyzmLWh6R+ujXQE+EO9QzgVM2k"
 
 config :guardian, Guardian.DB,

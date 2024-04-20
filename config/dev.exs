@@ -1,11 +1,11 @@
 import Config
 
 # Configure your database
-config :hakaton, HakatonBackend.Repo,
+config :hakaton_backend, HakatonBackend.Repo,
   username: "zhora",
   password: "postgres",
   hostname: "localhost",
-  database: "hakaton_dev",
+  database: "hakaton_backend_dev",
   stacktrace: true,
   show_sensitive_data_on_connection_error: true,
   pool_size: 10
@@ -16,7 +16,7 @@ config :hakaton, HakatonBackend.Repo,
 # The watchers configuration can be used to run external
 # watchers to your application. For example, we can use it
 # to bundle .js and .css sources.
-config :hakaton, HakatonBackend.Endpoint,
+config :hakaton_backend, HakatonBackend.Endpoint,
   # Binding to loopback ipv4 address prevents access from other machines.
   # Change to `ip: {0, 0, 0, 0}` to allow access from other machines.
   http: [ip: {127, 0, 0, 1}, port: 4000],

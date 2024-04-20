@@ -44,6 +44,8 @@ defmodule HakatonBackendWeb do
       import Plug.Conn
       import HakatonBackendWeb.Gettext
 
+      @bad_request {:error, :bad_request}
+
       unquote(verified_routes())
     end
   end

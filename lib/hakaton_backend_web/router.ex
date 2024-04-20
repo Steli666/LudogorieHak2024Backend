@@ -5,8 +5,20 @@ defmodule HakatonBackendWeb.Router do
     plug :accepts, ["json"]
   end
 
+  pipeline :authenticated do
+    plug HakatonBackendWeb.Plug.EnsureAuthenticated
+  end
+
   scope "/api", HakatonBackendWeb do
     pipe_through :api
+
+    post("/login", SessionController, :login)
+    post("/register", SessionController, :register)
+
+    scope "/" do
+      pipe_through :authenticated
+      post("/refresh", SessionController, :refresh_token)
+    end
   end
 
   # Enable LiveDashboard and Swoosh mailbox preview in development

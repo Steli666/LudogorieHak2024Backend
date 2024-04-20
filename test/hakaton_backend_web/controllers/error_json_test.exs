@@ -2,7 +2,9 @@ defmodule HakatonBackendWeb.ErrorJSONTest do
   use HakatonBackendWeb.ConnCase, async: true
 
   test "renders 404" do
-    assert HakatonBackendWeb.ErrorJSON.render("404.json", %{}) == %{errors: %{detail: "Not Found"}}
+    assert HakatonBackendWeb.ErrorJSON.render("404.json", %{}) == %{
+             errors: %{detail: "Not Found"}
+           }
   end
 
   test "renders 500" do
