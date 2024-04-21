@@ -1,10 +1,11 @@
 defmodule HakatonBackendWeb.UserController do
-  alias HakatonBackend.DB.Models.User
   use HakatonBackendWeb, :controller
 
   alias HakatonBackend.Constants.FriendRequestStatus
 
   alias HakatonBackend.Repo
+  alias HakatonBackend.DB.Models.User
+  alias HakatonBackend.DB.Models.Event
   alias HakatonBackend.DB.Models.UserFriends
   alias HakatonBackend.DB.Models.Conversation
   alias HakatonBackend.DB.Models.FriendRequest
@@ -79,6 +80,48 @@ defmodule HakatonBackendWeb.UserController do
     end
   end
 
+  def get_friends(conn, params) do
+    user = Guardian.Plug.current_resource(conn)
+
+    with %User{friends: friends} <- Repo.preload(user, :friends),
+         parsed_friends <- Enum.map(friends, &user_view(&1, :simplified)) do
+      success(conn, %{friends: parsed_friends})
+    else
+      error -> error(conn, error)
+    end
+  end
+
+  def get_friend_requests(conn, params) do
+    user = Guardian.Plug.current_resource(conn)
+
+    with {:ok, friend_requests} <-
+           FriendRequest.get_all_by(%{
+             recipient_id: user.id,
+             status: FriendRequestStatus.pending()
+           }) do
+      parsed_users =
+        Enum.map(friend_requests, fn %{sender_id: sender_id} ->
+          {:ok, user} = User.get(sender_id)
+          user_view(user, :simplified)
+        end)
+
+      success(conn, %{friend_requests: parsed_users})
+    else
+      error -> error(conn, error)
+    end
+  end
+
+  def get_own_events(conn, params) do
+    user = Guardian.Plug.current_resource(conn)
+
+    with %User{organized_events: organized_events} <- Repo.preload(user, :organized_events),
+         parsed_events <- Enum.map(organized_events, &event_view/1) do
+      success(conn, %{organized_events: parsed_events})
+    else
+      error -> error(conn, error)
+    end
+  end
+
   def validate_show(%{"user_id" => _}), do: :ok
   def validate_show(_), do: @bad_request
 
@@ -108,4 +151,23 @@ defmodule HakatonBackendWeb.UserController do
       last_name: last_name
     }
   end
+
+  def user_view(
+        %User{
+          id: id,
+          username: username,
+          first_name: first_name,
+          last_name: last_name
+        },
+        :simplified
+      ) do
+    %{
+      id: id,
+      username: username,
+      first_name: first_name,
+      last_name: last_name
+    }
+  end
+
+  def event_view(%Event{name: name, time: time}), do: %{name: name, time: time}
 end

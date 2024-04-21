@@ -32,6 +32,12 @@ defmodule HakatonBackendWeb.Router do
     put("/refuse-friend-request/:sender_id", UserController, :refuse_friend_request)
     post("/refresh", SessionController, :refresh_token)
 
+    scope "/user" do
+      get("/friends", UserController, :get_friends)
+      get("/friend-requests", UserController, :get_friend_requests)
+      get("/own-events", UserController, :get_own_events)
+    end
+
     scope "/conversation" do
       get("/", ChatController, :index)
       get("/:conversation_id", ChatController, :show)

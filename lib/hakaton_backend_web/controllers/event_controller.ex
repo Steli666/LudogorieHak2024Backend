@@ -6,7 +6,6 @@ defmodule HakatonBackendWeb.EventController do
   alias HakatonBackend.DB.Models.UsersEvents
   alias HakatonBackend.DB.Models.Location
 
-
   def index(conn, _params) do
     with {:ok, active_events} <- Event.get_active(),
          parsed_events <- Enum.map(active_events, &event_view/1) do
