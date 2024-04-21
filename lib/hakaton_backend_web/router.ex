@@ -17,8 +17,11 @@ defmodule HakatonBackendWeb.Router do
 
     get("/user/:user_id", UserController, :show)
 
-    get("/events", EventController, :index)
-    get("/events/:event_id", EventController, :show)
+    scope "/events" do
+      get("/", EventController, :index)
+      get("/:event_id", EventController, :show)
+      get("/:event_id/attendees", EventController, :event_attendees)
+    end
   end
 
   scope "/api", HakatonBackendWeb do
@@ -38,6 +41,7 @@ defmodule HakatonBackendWeb.Router do
 
     scope "/events" do
       post("/create", EventController, :create)
+      put("/:event_id/attend", EventController, :attend)
     end
   end
 
