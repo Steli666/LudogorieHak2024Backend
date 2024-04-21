@@ -7,6 +7,32 @@ defmodule HakatonBackendWeb.UserControllerTest do
   alias HakatonBackend.Constants.FriendRequestStatus
   alias HakatonBackend.DB.Models.FriendRequest
 
+  describe "show/2" do
+    test "successfully show user", %{conn: conn} do
+      {:ok, user} =
+        User.create(%{
+          first_name: "Mark",
+          last_name: "Brie",
+          email: "markbrie@gmail.com",
+          password: "123456",
+          username: "mark_brie"
+        })
+
+      response =
+        conn
+        |> get("/api/user/#{user.id}")
+        |> json_response(200)
+
+      assert %{
+               "email" => "markbrie@gmail.com",
+               "first_name" => "Mark",
+               "last_name" => "Brie",
+               "profile_description" => nil,
+               "username" => "mark_brie"
+             } = response
+    end
+  end
+
   describe "send_friend_request/2" do
     setup do
       {:ok, user} =

@@ -14,6 +14,11 @@ defmodule HakatonBackendWeb.Router do
 
     post("/login", SessionController, :login)
     post("/register", SessionController, :register)
+
+    get("/user/:user_id", UserController, :show)
+
+    get("/events", EventController, :index)
+    get("/events/:event_id", EventController, :show)
   end
 
   scope "/api", HakatonBackendWeb do
@@ -29,6 +34,10 @@ defmodule HakatonBackendWeb.Router do
       get("/:conversation_id", ChatController, :show)
 
       post("/:conversation_id/:friend_id", ChatController, :send_message)
+    end
+
+    scope "/events" do
+      post("/create", EventController, :create)
     end
   end
 

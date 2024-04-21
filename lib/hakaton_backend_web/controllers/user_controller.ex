@@ -1,4 +1,5 @@
 defmodule HakatonBackendWeb.UserController do
+  alias HakatonBackend.DB.Models.User
   use HakatonBackendWeb, :controller
 
   alias HakatonBackend.Constants.FriendRequestStatus
@@ -7,6 +8,17 @@ defmodule HakatonBackendWeb.UserController do
   alias HakatonBackend.DB.Models.UserFriends
   alias HakatonBackend.DB.Models.Conversation
   alias HakatonBackend.DB.Models.FriendRequest
+
+  def show(conn, params) do
+    with {:ok, %{user_id: user_id}} <-
+           Validation.validate(&validate_show/1, params),
+         {:ok, user} <- User.get(user_id),
+         parsed_user <- user_view(user) do
+      success(conn, parsed_user)
+    else
+      error -> error(conn, error)
+    end
+  end
 
   def send_friend_request(conn, params) do
     user = Guardian.Plug.current_resource(conn)
@@ -67,6 +79,9 @@ defmodule HakatonBackendWeb.UserController do
     end
   end
 
+  def validate_show(%{"user_id" => _}), do: :ok
+  def validate_show(_), do: @bad_request
+
   def validate_send_friend_request(%{"recipient_id" => _}), do: :ok
   def validate_send_friend_request(_), do: @bad_request
 
@@ -75,4 +90,22 @@ defmodule HakatonBackendWeb.UserController do
 
   def validate_refuse_friend_request(%{"sender_id" => _}), do: :ok
   def validate_refuse_friend_request(_), do: @bad_request
+
+  def user_view(%User{
+        id: id,
+        username: username,
+        email: email,
+        profile_description: profile_description,
+        first_name: first_name,
+        last_name: last_name
+      }) do
+    %{
+      id: id,
+      username: username,
+      email: email,
+      profile_description: profile_description,
+      first_name: first_name,
+      last_name: last_name
+    }
+  end
 end

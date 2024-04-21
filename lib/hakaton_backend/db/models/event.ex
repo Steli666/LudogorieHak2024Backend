@@ -17,12 +17,29 @@ defmodule HakatonBackend.DB.Models.Event do
     timestamps()
   end
 
-  @required_attrs [:name, :time, :location_id, :organizer_id]
+  @required_attrs [:name, :time, :organizer_id]
   @allowed_attrs @required_attrs
 
   def changeset(struct, attrs \\ %{}) do
     struct
     |> cast(attrs, @allowed_attrs)
     |> validate_required(@required_attrs)
+  end
+
+  def get_active do
+    now = DateTime.utc_now()
+
+    from(e in __MODULE__,
+      where: e.time > ^now,
+      select: e
+    )
+    |> Repo.all()
+    |> case do
+      nil ->
+        {:ok, []}
+
+      entries ->
+        {:ok, entries}
+    end
   end
 end
