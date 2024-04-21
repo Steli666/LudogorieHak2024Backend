@@ -33,7 +33,7 @@ defmodule HakatonBackendWeb.Router do
     post("/refresh", SessionController, :refresh_token)
 
     scope "/user" do
-      get("/suggested-friends", UserController, :get_suggested_friends)
+      get("/find-friends", UserController, :get_suggested_friends)
       get("/friends", UserController, :get_friends)
       get("/friend-requests", UserController, :get_friend_requests)
       get("/own-events", UserController, :get_own_events)

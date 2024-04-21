@@ -86,8 +86,6 @@ defmodule HakatonBackendWeb.UserController do
     with %User{friends: friends} <- Repo.preload(user, :friends),
          parsed_friends <- Enum.map(friends, &user_view(&1, :simplified)) do
       success(conn, %{friends: parsed_friends})
-    else
-      error -> error(conn, error)
     end
   end
 
@@ -117,23 +115,20 @@ defmodule HakatonBackendWeb.UserController do
     with %User{organized_events: organized_events} <- Repo.preload(user, :organized_events),
          parsed_events <- Enum.map(organized_events, &event_view/1) do
       success(conn, %{organized_events: parsed_events})
-    else
-      error -> error(conn, error)
     end
   end
 
-  # def get_suggested_friends(conn, params) do
-  #   user = Guardian.Plug.current_resource(conn)
+  def get_suggested_friends(conn, _params) do
+    user = Guardian.Plug.current_resource(conn)
+    %{friends: friends} = Repo.preload(user, :friends)
 
-  #   with
-
-  #   parsed_friends <-
-  #     Enum.map friends, &user_view(&1, :simplified) do
-  #       success(conn, %{friends: parsed_friends})
-  #     else
-  #       error -> error(conn, error)
-  #     end
-  # end
+    with users <- User.all(),
+         friends_ids <- Enum.map(friends, fn %{id: friend_id} -> friend_id end),
+         non_friends <- Enum.filter(users, fn %{id: user_id} -> user_id not in friends_ids end),
+         parsed_non_friends <- Enum.map(non_friends, &user_view(&1, :simplified)) do
+      success(conn, %{non_friends: parsed_non_friends})
+    end
+  end
 
   def validate_show(%{"user_id" => _}), do: :ok
   def validate_show(_), do: @bad_request

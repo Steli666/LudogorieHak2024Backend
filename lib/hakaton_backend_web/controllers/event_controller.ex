@@ -34,8 +34,6 @@ defmodule HakatonBackendWeb.EventController do
          {:ok, event} <- Event.create(%{name: name, time: parsed_time, organizer_id: user.id}),
          {:ok, _} <- Location.create(%{event_id: event.id, is_online: false, name: location_name}) do
       success(conn, event_view(HakatonBackend.Repo.preload(event, :location)))
-    else
-      error -> error(conn, error)
     end
   end
 
