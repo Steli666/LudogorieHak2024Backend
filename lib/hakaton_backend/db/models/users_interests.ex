@@ -8,7 +8,7 @@ defmodule HakatonBackend.DB.Models.UsersInterests do
   @primary_key false
   schema "users_interests" do
     belongs_to :user, User
-    belongs_to :event, Interest
+    belongs_to :interest, Interest
 
     timestamps()
   end
@@ -17,6 +17,5 @@ defmodule HakatonBackend.DB.Models.UsersInterests do
     struct
     |> cast(attrs, [:user_id, :interest_id])
     |> validate_required([:user_id, :interest_id])
-    |> unique_constraint(:user_id, name: :user_events_user_id_interest_id_index)
   end
 end

@@ -80,7 +80,7 @@ defmodule HakatonBackendWeb.UserController do
     end
   end
 
-  def get_friends(conn, params) do
+  def get_friends(conn, _params) do
     user = Guardian.Plug.current_resource(conn)
 
     with %User{friends: friends} <- Repo.preload(user, :friends),
@@ -91,7 +91,7 @@ defmodule HakatonBackendWeb.UserController do
     end
   end
 
-  def get_friend_requests(conn, params) do
+  def get_friend_requests(conn, _params) do
     user = Guardian.Plug.current_resource(conn)
 
     with {:ok, friend_requests} <-
@@ -111,7 +111,7 @@ defmodule HakatonBackendWeb.UserController do
     end
   end
 
-  def get_own_events(conn, params) do
+  def get_own_events(conn, _params) do
     user = Guardian.Plug.current_resource(conn)
 
     with %User{organized_events: organized_events} <- Repo.preload(user, :organized_events),
@@ -121,6 +121,19 @@ defmodule HakatonBackendWeb.UserController do
       error -> error(conn, error)
     end
   end
+
+  # def get_suggested_friends(conn, params) do
+  #   user = Guardian.Plug.current_resource(conn)
+
+  #   with
+
+  #   parsed_friends <-
+  #     Enum.map friends, &user_view(&1, :simplified) do
+  #       success(conn, %{friends: parsed_friends})
+  #     else
+  #       error -> error(conn, error)
+  #     end
+  # end
 
   def validate_show(%{"user_id" => _}), do: :ok
   def validate_show(_), do: @bad_request

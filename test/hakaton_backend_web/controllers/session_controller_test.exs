@@ -10,7 +10,8 @@ defmodule HakatonBackendWeb.SessionControllerTest do
         last_name: "Blue",
         email: "email@gmail.com",
         password: "123456",
-        username: "Dobby"
+        username: "Dobby",
+        interests: ["js", "ruby", "python"]
       }
 
       assert %{"token" => _} =
